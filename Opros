@@ -1,0 +1,74 @@
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
+
+@WebServlet(name="Opros",urlPatterns = "/Opros")
+
+public class Opros extends HttpServlet {
+
+    public static Set<String> questionsList=new HashSet<>();
+    static {
+      questionsList.add("What color do you like");
+      questionsList.add("Do you like sea");
+    }
+
+  public static Map<String,Integer> firstAnswer =new HashMap<>();
+  public static Map<String,Integer> secondAnswer=new HashMap<>();
+    static {
+        firstAnswer.put("What color do you like",0);
+        firstAnswer.put("Do you like sea",0);
+        secondAnswer.put("What color do you like",0);
+        secondAnswer.put("Do you like sea",0);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    String name=req.getParameter("name");
+    String surname=req.getParameter("surname");
+    String ageString=req.getParameter("age");
+
+
+    String answerForFirstQuestion=req.getParameter("answerFirst");
+    String answerForSecondQuestion=req.getParameter("answerSecond");
+
+    if(answerForFirstQuestion.equals("blue")){
+         if (firstAnswer.get("What color do you like")!=null){
+           firstAnswer.put("What color do you like", firstAnswer.get("What color do you like")+1);
+         }else firstAnswer.put("What color do you like",1);
+
+    }else if (answerForFirstQuestion.equals("black")){
+        if (secondAnswer.get("What color do you like")!=null){
+          secondAnswer.put("What color do you like",secondAnswer.get("What color do you like")+1);
+        }
+      }
+
+    if(answerForSecondQuestion.equals("yes")){
+       if (firstAnswer.get("Do you like sea")!=null){
+          firstAnswer.put("Do you like sea", firstAnswer.get("Do you like sea")+1);
+        }else firstAnswer.put("Do you like sea",1);
+
+    }else if(answerForSecondQuestion.equals("no")) {
+        if (secondAnswer.get("Do you like sea")!=null){
+          secondAnswer.put("Do you like sea",secondAnswer.get("Do you like sea")+1);
+        }
+    }
+
+      PrintWriter pw=resp.getWriter();
+        StringBuffer sb=new StringBuffer();
+        sb.append("<p>Статистика опросов:</p>");
+
+        sb.append("<p>What color do you like:</p>" + "<p> answer blue: " +firstAnswer.get("What color do you like")+"</p>");
+        sb.append("<p> answer black: " +secondAnswer.get("What color do you like")+"</p>");
+
+        sb.append("<p> Do you like sea :</p>" + "<p> answer Yes: " +firstAnswer.get("Do you like sea")+"</p>");
+        sb.append("<p> answer No: " +secondAnswer.get("Do you like sea")+"</p>");
+        
+        pw.println(sb);
+
+    }
+}
